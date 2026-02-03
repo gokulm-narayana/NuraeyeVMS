@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="vmsApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMS - Navigation</title>
+
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/cameras.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/alerts.css">
+    <link rel="stylesheet" href="css/multiview.css">
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+
+<body class="light-theme" ng-controller="MainController">
+
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-container">
+                    <img src="assets/logo.png" alt="NURAEYE VMS" style="height: 100px; width: auto;">
+                    <span style="display:none;">NURAEYE VMS</span>
+                </div>
+            </div>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: 24px;">
+                <!-- Alerts Icon -->
+                <div class="icon-badge-container">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <div class="badge">3</div>
+                </div>
+
+                <!-- Theme Toggle -->
+                <div class="icon-badge-container" ng-click="toggleTheme()" title="Toggle Theme">
+                    <svg ng-if="theme === 'light'" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg ng-if="theme === 'dark'" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </div>
+
+                <!-- User Profile -->
+                <div class="user-profile" style="position: relative;" ng-click="toggleUserDropdown($event)">
+                    <div class="avatar">{{ user.initials }}</div>
+                    <div class="user-info">
+                        <span class="user-name">{{ user.name }}</span>
+                        <span class="user-role">{{ user.role }}</span>
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div class="dropdown-menu" ng-class="{ 'show': isUserDropdownOpen }">
+                        <a href="#" class="dropdown-item">Profile</a>
+                        <a href="#" class="dropdown-item">Settings</a>
+                        <a href="#" class="dropdown-item" style="color: var(--danger-color);">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <nav class="app-sidebar">
+            <ul class="nav-list">
+
+                <li class="nav-item" ng-class="{ 'active': activePage === 'dashboard' }"
+                    ng-click="navigateTo('dashboard')">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span class="nav-text">Dashboard</span>
+                </li>
+
+                <li class="nav-item" ng-class="{ 'active': activePage === 'cameras' }" ng-click="navigateTo('cameras')">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                        </path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span class="nav-text">Cameras</span>
+                </li>
+
+                <li class="nav-item" ng-class="{ 'active': activePage === 'alerts' }" ng-click="navigateTo('alerts')">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span class="nav-text">Alerts</span>
+                </li>
+
+                <li class="nav-item" ng-class="{ 'active': activePage === 'multiview' }"
+                    ng-click="navigateTo('multiview')">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
+                        <line x1="12" y1="2" x2="12" y2="22"></line>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                    </svg>
+                    <span class="nav-text">Multiview</span>
+                </li>
+
+                <li class="nav-item" ng-class="{ 'active': activePage === 'settings' }"
+                    ng-click="navigateTo('settings')">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
+                    <span class="nav-text">Settings</span>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main">
+
+            <!-- Dashboard View -->
+            <div class="dashboard-grid" ng-controller="DashboardController" ng-show="activePage === 'dashboard'">
+
+                <!-- Loading / Error States -->
+                <div class="dashboard-loading" ng-if="isLoading"
+                    style="grid-column: 1/-1; text-align: center; padding: 20px;">
+                    Loading Dashboard...
+                </div>
+                <div class="dashboard-error" ng-if="error"
+                    style="grid-column: 1/-1; text-align: center; padding: 20px; color: red;">
+                    {{ error }}
+                </div>
+
+                <!-- Zone 1: Camera Summary -->
+                <section class="dashboard-zone" id="zone-1" ng-if="!isLoading && !error">
+                    <div class="zone-header">
+                        <span class="zone-title">Camera Summary</span>
+                        <div class="zone-actions" title="Configure Zone"
+                            ng-click="openSettings('zone-1', 'Camera Summary')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="zone-content camera-summary-grid">
+                        <div class="widget-card" ng-if="widgetConfig.zone1.total">
+                            <div class="widget-value" style="color: var(--accent-color);">{{ data.cameraSummary.total }}
+                            </div>
+                            <div class="widget-label">Total Cameras</div>
+                        </div>
+                        <div class="widget-card" ng-if="widgetConfig.zone1.online">
+                            <div class="widget-value" style="color: var(--success-color);">{{ data.cameraSummary.online
+                                }}</div>
+                            <div class="widget-label">Online</div>
+                        </div>
+                        <div class="widget-card" ng-if="widgetConfig.zone1.offline">
+                            <div class="widget-value" style="color: var(--danger-color);">{{ data.cameraSummary.offline
+                                }}</div>
+                            <div class="widget-label">Offline</div>
+                        </div>
+                        <div class="widget-card" ng-if="widgetConfig.zone1.recording">
+                            <div class="widget-value" style="color: var(--text-primary);">{{
+                                data.cameraSummary.recording }}</div>
+                            <div class="widget-label">Recording</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Zone 2: System & Storage -->
+                <section class="dashboard-zone" id="zone-2" ng-if="!isLoading && !error">
+                    <div class="zone-header">
+                        <span class="zone-title">System & Storage</span>
+                        <div class="zone-actions" title="Configure Zone"
+                            ng-click="openSettings('zone-2', 'System & Storage')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="zone-content">
+
+                        <div style="margin-bottom: var(--spacing-md)" ng-if="widgetConfig.zone2.storage">
+                            <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+                                <span class="widget-label">Storage Usage</span>
+                                <span style="font-weight:600; font-size:12px;">{{ data.systemStatus.storageUsage
+                                    }}%</span>
+                            </div>
+                            <div style="height:6px; background: var(--bg-hover); border-radius:3px; overflow:hidden;">
+                                <div ng-style="{ 'width': data.systemStatus.storageUsage + '%' }"
+                                    style="height:100%; background: var(--accent-color);"></div>
+                            </div>
+                            <div style="font-size:10px; color:var(--text-muted); margin-top:4px;">{{
+                                data.systemStatus.retentionDays }} Days Retention Remaining</div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-top: auto;"
+                            ng-if="widgetConfig.zone2.cpu || widgetConfig.zone2.memory">
+                            <div class="widget-card" style="padding: var(--spacing-sm);" ng-if="widgetConfig.zone2.cpu">
+                                <div style="font-size: 16px; font-weight:700;">{{ data.systemStatus.cpuLoad }}%</div>
+                                <div style="font-size: 10px; color: var(--text-secondary);">CPU Load</div>
+                            </div>
+                            <div class="widget-card" style="padding: var(--spacing-sm);"
+                                ng-if="widgetConfig.zone2.memory">
+                                <div style="font-size: 16px; font-weight:700;">{{ data.systemStatus.memoryUsage }}%
+                                </div>
+                                <div style="font-size: 10px; color: var(--text-secondary);">Memory</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--spacing-md); display:flex; align-items:center; gap:8px;"
+                            ng-if="widgetConfig.zone2.server">
+                            <span style="width:8px; height:8px; border-radius:50%;"
+                                ng-style="{'background-color': data.systemStatus.serverStatus === 'Healthy' ? 'var(--success-color)' : 'var(--danger-color)'}"></span>
+                            <span style="font-size:12px; font-weight:600;">Server Status: {{
+                                data.systemStatus.serverStatus }}</span>
+                            <span style="font-size:10px; color:var(--text-muted); margin-left:auto;">Uptime: {{
+                                data.systemStatus.uptime }}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Zone 3: Camera Status -->
+                <section class="dashboard-zone" id="zone-3" ng-if="!isLoading && !error">
+                    <div class="zone-header">
+                        <span class="zone-title">Camera Issues</span>
+                        <div class="zone-actions" title="Configure Zone"
+                            ng-click="openSettings('zone-3', 'Camera Issues')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="zone-content">
+                        <div ng-if="!widgetConfig.zone3.issues" style="text-align:center; color:var(--text-muted);">
+                            Widget Hidden</div>
+
+                        <div ng-if="widgetConfig.zone3.issues && data.cameraIssues.length === 0"
+                            style="text-align:center; color:var(--text-muted); padding:20px;">No Issues Found</div>
+
+                        <div ng-if="widgetConfig.zone3.issues" ng-repeat="cam in data.cameraIssues"
+                            class="widget-list-item" ng-click="resolveIssue(cam)" style="cursor: pointer;"
+                            ng-class="{'critical': cam.status === 'Offline', 'warning': cam.status !== 'Offline'}">
+                            <div style="display:flex; flex-direction:column;">
+                                <span style="font-weight:600;">{{ cam.name }}</span>
+                                <span style="font-size:10px; color:var(--text-muted);">{{ cam.location }}</span>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:11px; font-weight:600;"
+                                    ng-style="{'color': cam.status === 'Offline' ? 'var(--danger-color)' : 'var(--warning-color)'}">
+                                    {{ cam.status }}</div>
+                                <div style="font-size:10px; color:var(--text-muted);">{{ cam.time }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Zone 4: Alerts -->
+                <section class="dashboard-zone" id="zone-4" ng-if="!isLoading && !error">
+                    <div class="zone-header">
+                        <span class="zone-title">Active Alerts</span>
+                        <div class="zone-actions" title="Configure Zone"
+                            ng-click="openSettings('zone-4', 'Active Alerts')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="zone-content">
+                        <div ng-if="!widgetConfig.zone4.alerts" style="text-align:center; color:var(--text-muted);">
+                            Widget Hidden</div>
+
+                        <div ng-if="widgetConfig.zone4.alerts" ng-repeat="alert in data.alerts" class="widget-list-item"
+                            ng-style="{'border-left': '3px solid ' + getSeverityColor(alert.severity)}">
+                            <div style="display:flex; flex-direction:column;">
+                                <span style="font-weight:600;">{{ alert.type }}</span>
+                                <span style="font-size:10px; color:var(--text-muted);">{{ alert.location }}</span>
+                            </div>
+                            <div style="text-align:right;">
+                                <span
+                                    style="font-size:10px; background:var(--bg-hover); padding:2px 6px; border-radius:4px;">{{
+                                    alert.severity }}</span>
+                                <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">{{ alert.time }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Widget Settings Modal -->
+                <div id="settings-modal" class="modal-overlay" ng-class="{'open': settingsModalOpen}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="modal-title">Configure {{ activeZoneTitle }}</span>
+                            <span class="modal-close" ng-click="closeSettings()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="widget-toggle-item" ng-repeat="item in tempConfigKeys">
+                                <span>{{ item.label }}</span>
+                                <label class="switch">
+                                    <input type="checkbox" ng-model="tempConfig[item.key]">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" ng-click="closeSettings()">Cancel</button>
+                            <button class="btn btn-primary" ng-click="saveSettings()">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <!-- Alerts View -->
+            <div class="alerts-page" ng-controller="AlertsController" ng-show="activePage === 'alerts'">
+
+                <!-- Setup CSS for Alerts (Scoped to this view effectively via classes) -->
+
+
+                <!-- Filters Bar -->
+                <div class="filters-bar" style="flex-wrap: wrap; gap: 12px;">
+
+                    <!-- Search -->
+                    <div class="search-container">
+                        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" class="search-input" placeholder="Search alerts..." ng-model="filters.search"
+                            ng-change="onFilterChange()">
+                    </div>
+
+                    <!-- Status Filter -->
+                    <select class="filter-select" ng-model="filters.status" ng-change="onFilterChange()"
+                        ng-options="s for s in options.statuses">
+                    </select>
+
+                    <!-- Severity Filter -->
+                    <select class="filter-select" ng-model="filters.severity" ng-change="onFilterChange()">
+                        <option value="">All Severities</option>
+                        <option ng-repeat="s in options.severities" value="{{s}}">{{s}}</option>
+                    </select>
+
+                    <!-- Group/Location Filter -->
+                    <select class="filter-select" ng-model="filters.location" ng-change="onFilterChange()">
+                        <option value="">All Locations</option>
+                        <option ng-repeat="loc in options.locations" value="{{loc}}">{{loc}}</option>
+                    </select>
+
+                    <!-- Time Range Filter -->
+                    <select class="filter-select" ng-model="filters.timeRange" ng-change="onFilterChange()"
+                        ng-options="t.val as t.label for t in options.timeRanges">
+                    </select>
+
+                    <!-- Custom Time Range -->
+                    <div class="custom-time-inputs" ng-show="filters.timeRange === 'custom'">
+                        <input type="datetime-local" ng-model="filters.customStart" ng-change="onFilterChange()">
+                        <span>to</span>
+                        <input type="datetime-local" ng-model="filters.customEnd" ng-change="onFilterChange()">
+                    </div>
+
+                    <!-- Spacer -->
+                    <div style="flex: 1;"></div>
+
+                    <!-- Stats & Actions -->
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="stat-badge"
+                            style="display:flex; gap:6px; align-items:center; background: rgba(var(--accent-rgb), 0.1); color: var(--accent-color); padding: 6px 10px; border-radius: 4px; font-weight:600; font-size:12px;">
+                            <span>{{ stats.unread }}</span> Unread
+                        </div>
+                        <div class="stat-badge"
+                            style="display:flex; gap:6px; align-items:center; background: rgba(211, 47, 47, 0.1); color: var(--danger-color); padding: 6px 10px; border-radius: 4px; font-weight:600; font-size:12px;">
+                            <span>{{ stats.critical }}</span> Critical
+                        </div>
+
+                        <div style="width:1px; height:20px; background:var(--border-color);"></div>
+
+                        <button class="btn-primary-outline" ng-click="acknowledgeAll()" ng-disabled="stats.unread === 0"
+                            style="padding: 6px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px; border: 1px solid var(--accent-color); color: var(--accent-color); background: transparent; border-radius: 4px; cursor: pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Ack All
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Alert List -->
+                <div class="table-container">
+                    <div class="table-content-scroll" style="background: transparent; padding: 0;">
+
+                        <!-- Table Content -->
+                        <table class="cameras-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px;">Severity</th>
+                                    <th>Alert Type</th>
+                                    <th>Camera</th>
+                                    <th>Time</th>
+                                    <th style="width: 100px;">Status</th>
+                                    <th style="width: 60px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loading / Empty -->
+                                <tr ng-if="isLoading">
+                                    <td colspan="6"
+                                        style="text-align: center; padding: 20px; color: var(--text-muted);">Loading...
+                                    </td>
+                                </tr>
+                                <tr ng-if="!isLoading && paginatedAlerts.length === 0">
+                                    <td colspan="6"
+                                        style="text-align: center; padding: 20px; color: var(--text-muted);">No alerts
+                                        found.</td>
+                                </tr>
+
+                                <!-- Rows -->
+                                <tr ng-repeat="alert in paginatedAlerts"
+                                    ng-class="{'unviewed': alert.status === 'Unread'}">
+                                    <td>
+                                        <span class="badge-severity"
+                                            ng-class="'severity-' + alert.severity.toLowerCase()">{{ alert.severity
+                                            }}</span>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight: 500; color: var(--text-primary);">{{ alert.type }}
+                                        </div>
+                                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">{{
+                                            alert.description }}</div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight: 500;">{{ alert.cameraName }}</div>
+                                        <div style="font-size: 11px; color: var(--text-muted);">{{ alert.location }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 13px;">{{ formatDate(alert.timestamp) }}</div>
+                                        <div style="font-size: 11px; color: var(--text-muted);">{{ alert.timeAgo }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status" ng-class="alert.status.toLowerCase()">{{ alert.status
+                                            }}</span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div class="action-btn" title="Actions"
+                                            ng-click="toggleActionMenu($event, alert)">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="1"></circle>
+                                                <circle cx="12" cy="5" r="1"></circle>
+                                                <circle cx="12" cy="19" r="1"></circle>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-bar">
+                        <div class="pagination-info">{{ pagination.label }}</div>
+                        <div class="pagination-controls">
+                            <button class="page-btn" ng-disabled="pagination.currentPage === 1"
+                                ng-click="prevPage()">Previous</button>
+                            <button class="page-btn"
+                                ng-disabled="pagination.currentPage * pagination.itemsPerPage >= pagination.totalItems"
+                                ng-click="nextPage()">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Re-use Action Menu for Alerts ?? Or create distinct one? 
+                       Cameras Controller handles the popup logic. 
+                       Alerts Controller needs IT'S OWN popup logic or we duplicate it.
+                       For MVP, let's inject a scoped popup for alerts specifically. -->
+
+                <div class="action-popup" ng-if="activeActionMenu" style="display:block; position:fixed;"
+                    ng-style="menuPosition" ng-click="$event.stopPropagation()">
+
+                    <div class="action-item" ng-if="activeActionAlert.status === 'Unread'"
+                        ng-click="acknowledge(activeActionAlert); closeActionMenu()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Acknowledge
+                    </div>
+
+                    <div class="action-item"
+                        ng-click="handleAction('View Camera', activeActionAlert); closeActionMenu()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                            </path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        View Camera
+                    </div>
+
+                    <div class="action-item" ng-if="activeActionAlert.status !== 'Resolved'"
+                        ng-click="resolve(activeActionAlert); closeActionMenu()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Resolve
+                    </div>
+
+                    <div class="action-item delete" ng-click="delete(activeActionAlert); closeActionMenu()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
+                        </svg>
+                        Delete
+                    </div>
+                </div>
+
+            </div>
+            <!-- Multi-View View -->
+            <div class="multiview-page" ng-controller="MultiviewController" ng-show="activePage === 'multiview'">
+
+                <div class="multiview-container">
+                    <!-- Toolbar -->
+                    <div class="multiview-toolbar">
+                        <div class="layout-controls">
+                            <button class="layout-btn" ng-class="{'active': layout === '1x1'}"
+                                ng-click="setLayout('1x1')" title="Single View">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                </svg>
+                            </button>
+                            <button class="layout-btn" ng-class="{'active': layout === '2x2'}"
+                                ng-click="setLayout('2x2')" title="2x2 Grid">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                            </button>
+                            <button class="layout-btn" ng-class="{'active': layout === '3x3'}"
+                                ng-click="setLayout('3x3')" title="3x3 Grid">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="3" y="3" width="5" height="5"></rect>
+                                    <rect x="10" y="3" width="5" height="5"></rect>
+                                    <rect x="17" y="3" width="5" height="5"></rect>
+                                    <rect x="3" y="10" width="5" height="5"></rect>
+                                    <rect x="10" y="10" width="5" height="5"></rect>
+                                    <rect x="17" y="10" width="5" height="5"></rect>
+                                    <rect x="3" y="17" width="5" height="5"></rect>
+                                    <rect x="10" y="17" width="5" height="5"></rect>
+                                    <rect x="17" y="17" width="5" height="5"></rect>
+                                </svg>
+                            </button>
+                            <button class="layout-btn" ng-class="{'active': layout === '4x4'}"
+                                ng-click="setLayout('4x4')" title="4x4 Grid">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="2" y="2" width="4" height="4"></rect>
+                                    <rect x="8" y="2" width="4" height="4"></rect>
+                                    <rect x="14" y="2" width="4" height="4"></rect>
+                                    <rect x="20" y="2" width="4" height="4"></rect>
+                                    <rect x="2" y="8" width="4" height="4"></rect>
+                                    <rect x="8" y="8" width="4" height="4"></rect>
+                                    <rect x="14" y="8" width="4" height="4"></rect>
+                                    <rect x="20" y="8" width="4" height="4"></rect>
+                                    <rect x="2" y="14" width="4" height="4"></rect>
+                                    <rect x="8" y="14" width="4" height="4"></rect>
+                                    <rect x="14" y="14" width="4" height="4"></rect>
+                                    <rect x="20" y="14" width="4" height="4"></rect>
+                                    <rect x="2" y="20" width="4" height="4"></rect>
+                                    <rect x="8" y="20" width="4" height="4"></rect>
+                                    <rect x="14" y="20" width="4" height="4"></rect>
+                                    <rect x="20" y="20" width="4" height="4"></rect>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="multiview-actions" style="display: flex; align-items: center; gap: 16px;">
+                            <!-- Pagination -->
+                            <div class="pagination-simple" style="display:flex; align-items:center; gap:8px;">
+                                <button class="layout-btn"
+                                    style="width:24px; height:24px; background:var(--bg-secondary); border:1px solid var(--border-color); color: var(--text-primary);"
+                                    ng-click="prevPage()" ng-disabled="currentPage === 1" title="Previous Page">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                </button>
+                                <span style="font-size:13px; font-weight:600; min-width:50px; text-align:center;">Page
+                                    {{ currentPage }}</span>
+                                <button class="layout-btn"
+                                    style="width:24px; height:24px; background:var(--bg-secondary); border:1px solid var(--border-color); color: var(--text-primary);"
+                                    ng-click="nextPage()" title="Next Page">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div style="width:1px; height:20px; background:var(--border-color);"></div>
+
+                            <button class="btn btn-secondary" ng-click="clearAll()">Clear All</button>
+                        </div>
+                    </div>
+
+                    <!-- Grid -->
+                    <div class="grid-container" ng-class="'grid-' + layout">
+
+                        <div class="camera-tile" ng-repeat="cell in cells track by $index">
+
+                            <!-- Empty State -->
+                            <div class="tile-placeholder" ng-if="!cell" ng-click="openCameraSelector($index)">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="opacity: 0.5; margin-bottom: 8px;">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>Add Camera</span>
+                            </div>
+
+                            <!-- Assigned State -->
+                            <div class="tile-video-content" ng-if="cell" ng-dblclick="toggleFullScreen($index)">
+                                <div class="video-sim">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M15.6 11.6L22 7v10l-6.4-4.5v-1z" />
+                                        <rect x="2" y="5" width="14" height="14" rx="2" ry="2" />
+                                    </svg>
+                                </div>
+                                <div class="tile-header">
+                                    <span class="tile-cam-name">{{ cell.name }}</span>
+                                    <span class="tile-status-dot"
+                                        ng-class="'status-' + cell.status.toLowerCase()"></span>
+                                </div>
+                                <div class="tile-controls">
+                                    <button class="btn-tile-close" ng-click="clearCell($event, $index)"
+                                        title="Remove Camera">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Camera Selector Modal -->
+                <div class="modal-overlay" ng-class="{'open': isSelectorOpen}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="modal-title">Select Camera</span>
+                            <span class="modal-close" ng-click="closeCameraSelector()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="search-container" style="margin-bottom: 16px;">
+                                <input type="text" class="search-input" placeholder="Search cameras..."
+                                    ng-model="cameraSearch" ng-change="filterCameras()">
+                            </div>
+
+                            <div class="camera-select-list">
+                                <div class="camera-select-item" ng-repeat="cam in filteredCameras"
+                                    ng-click="assignCamera(cam)">
+                                    <div style="display:flex; flex-direction:column;">
+                                        <span style="font-weight:500;">{{ cam.name }}</span>
+                                        <span style="font-size:11px; color:var(--text-muted);">{{ cam.location }}</span>
+                                    </div>
+                                    <span class="status-badge" ng-class="cam.status.toLowerCase()"
+                                        style="font-size:10px;">{{ cam.status }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full Screen Overlay -->
+                <div class="multiview-fullscreen-overlay" ng-if="fullScreenCellIndex !== null">
+                    <div class="fullscreen-tile">
+                        <div class="tile-video-content" style="width:100%; height:100%;">
+                            <div class="video-sim" style="font-size: 80px;">
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M15.6 11.6L22 7v10l-6.4-4.5v-1z" />
+                                    <rect x="2" y="5" width="14" height="14" rx="2" ry="2" />
+                                </svg>
+                            </div>
+                            <div class="tile-header">
+                                <span class="tile-cam-name" style="font-size: 18px;">{{ cells[fullScreenCellIndex].name
+                                    }}</span>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <span class="badge" style="background:red;">LIVE</span>
+                                    <button class="btn-tile-close" ng-click="toggleFullScreen(null)"
+                                        title="Exit Fullscreen">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="cameras-page" ng-controller="CamerasController" ng-show="activePage === 'cameras'">
+
+                <!-- Filters & Actions -->
+                <div class="filters-bar">
+                    <div class="search-container">
+                        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" class="search-input" placeholder="Search by name or location..."
+                            ng-model="filters.search" ng-change="applyFilters()">
+                    </div>
+
+                    <div class="filter-group">
+                        <select class="filter-select" ng-model="filters.status" ng-change="applyFilters()">
+                            <option value="">All Status</option>
+                            <option ng-repeat="status in filterOptions.statuses" value="{{status}}">{{status}}</option>
+                        </select>
+
+                        <select class="filter-select" ng-model="filters.group" ng-change="applyFilters()">
+                            <option value="">All Groups</option>
+                            <option ng-repeat="group in filterOptions.groups" value="{{group}}">{{group}}</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-clear-filters" ng-click="clearFilters()">Clear Filters</button>
+
+                    <button class="btn-add-camera">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Camera
+                    </button>
+                </div>
+
+                <!-- Table -->
+                <div class="table-container">
+                    <div class="table-content-scroll">
+                        <table class="cameras-table">
+                            <thead>
+                                <tr>
+                                    <th>Camera Name</th>
+                                    <th>Location / Group</th>
+                                    <th>Status</th>
+                                    <th>Recording</th>
+                                    <th>Last Seen</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="isLoading">
+                                    <td colspan="6" style="text-align:center; padding:20px;">Loading cameras...</td>
+                                </tr>
+                                <tr ng-if="dataError">
+                                    <td colspan="6" style="text-align:center; color:red; padding:20px;">Error loading
+                                        data</td>
+                                </tr>
+                                <tr ng-if="!isLoading && !dataError && paginatedCameras.length === 0">
+                                    <td colspan="6" style="text-align:center; padding:20px;">No cameras found</td>
+                                </tr>
+
+                                <tr ng-repeat="cam in paginatedCameras">
+                                    <td>
+                                        <div style="font-weight: 500;">{{ cam.name }}</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">{{ cam.ip }}</div>
+                                    </td>
+                                    <td>{{ cam.location }}</td>
+                                    <td>
+                                        <span class="status-badge" ng-class="cam.status.toLowerCase()">
+                                            <span class="status-dot"></span>
+                                            {{ cam.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span ng-if="cam.recording" title="Recording On"
+                                            style="color:var(--success-color);">● REC</span>
+                                        <span ng-if="!cam.recording" title="Recording Off"
+                                            style="color:var(--text-muted);">○ Off</span>
+                                    </td>
+                                    <td style="font-size: 12px; color: var(--text-muted);">{{ cam.lastSeen }}</td>
+                                    <td>
+                                        <div class="action-btn" title="Camera Options"
+                                            ng-click="openCameraDetails(cam)">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                                                </path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="pagination-bar">
+                        <div class="pagination-info">{{ paginationLabel }}</div>
+                        <div class="pagination-controls">
+                            <button class="page-btn" ng-disabled="currentPage === 1"
+                                ng-click="prevPage()">Previous</button>
+                            <button class="page-btn" ng-disabled="currentPage * itemsPerPage >= totalItems"
+                                ng-click="nextPage()">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Camera Details / Settings Page -->
+            <div class="camera-settings-page" ng-show="activePage === 'camera-settings'"
+                ng-controller="CameraSettingsController" style="padding: 24px;">
+
+
+                <div
+                    style="background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color); padding: 32px; height: 100%;">
+                    <h2 style="margin-top: 0; margin-bottom: 24px; color: var(--text-primary);">Camera Options: {{
+                        camera.name }}</h2>
+
+                    <!-- Action Grid -->
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px;">
+                        <div class="setting-card-action" ng-click="handleAction('View Live')">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <span>View Live</span>
+                        </div>
+                        <div class="setting-card-action" ng-click="handleAction('Playback')">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>Playback</span>
+                        </div>
+                        <div class="setting-card-action" ng-click="handleAction('Restart')">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                            </svg>
+                            <span>Restart</span>
+                        </div>
+                        <div class="setting-card-action danger" ng-click="handleAction('Delete')">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                            <span>Delete Camera</span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom: 16px; color: var(--text-primary);">Edit Settings</h3>
+                    <form ng-submit="saveSettings()">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                            <div class="form-group">
+                                <label
+                                    style="display:block; margin-bottom:8px; font-size:12px; font-weight:600; color:var(--text-secondary);">Camera
+                                    Name</label>
+                                <input type="text" ng-model="camera.name" class="search-input"
+                                    style="width:100%; box-sizing:border-box;">
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    style="display:block; margin-bottom:8px; font-size:12px; font-weight:600; color:var(--text-secondary);">IP
+                                    Address</label>
+                                <input type="text" ng-model="camera.ip" class="search-input"
+                                    style="width:100%; box-sizing:border-box;">
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    style="display:block; margin-bottom:8px; font-size:12px; font-weight:600; color:var(--text-secondary);">Location</label>
+                                <input type="text" ng-model="camera.location" class="search-input"
+                                    style="width:100%; box-sizing:border-box;">
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    style="display:block; margin-bottom:8px; font-size:12px; font-weight:600; color:var(--text-secondary);">Type</label>
+                                <select ng-model="camera.type" class="filter-select"
+                                    style="width:100%; box-sizing:border-box;">
+                                    <option value="IP">IP Camera</option>
+                                    <option value="PTZ">PTZ Camera</option>
+                                    <option value="Fisheye">Fisheye</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; gap:12px;">
+                            <button type="button" class="btn-secondary" ng-click="goBack()">Cancel</button>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+
+                    <!-- Delete Confirmation Modal -->
+                    <div class="modal-overlay" ng-class="{'open': showDeleteModal}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="modal-title">Delete Camera</span>
+                                <span class="modal-close" ng-click="cancelDelete()">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete <strong>{{ camera.name }}</strong>?</p>
+                                <p style="color: var(--text-muted); font-size: 14px;">This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" ng-click="cancelDelete()">Cancel</button>
+                                <button class="btn btn-primary" style="background-color: var(--danger-color);"
+                                    ng-click="confirmDelete()">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="action-popup" ng-show="activeActionMenu" ng-style="menuPosition" ng-click="stopProp($event)">
+
+                <div class="action-item" ng-click="handleAction('View Live', null)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    View Live
+                </div>
+                <div class="action-item" ng-click="handleAction('Playback', null)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Playback
+                </div>
+                <div class="action-item" ng-click="handleAction('Edit', null)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit Camera
+                </div>
+                <div class="action-item" ng-click="handleAction('Restart', null)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    Restart Camera
+                </div>
+                <div class="action-item" ng-click="handleAction('Disable', null)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                    </svg>
+                    Disable
+                </div>
+                <div class="action-item delete" ng-click="handleAction('Delete', null)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                        </path>
+                    </svg>
+                    Delete
+                </div>
+            </div>
+
+    </div>
+    </main>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/vms-app.js"></script>
+    <script src="js/dashboard-controller.js"></script>
+    <script src="js/cameras-controller.js"></script>
+    <script src="js/alerts-controller.js"></script>
+    <script src="js/multiview-controller.js"></script>
+</body>
+
+</html>
